@@ -26,7 +26,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [MopaBootstrapBundle]
+    bundles:        []
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -58,5 +58,3 @@ fos_user:
   firewall_name: main
   user_class: Craft\UserBundle\Document\User
   
-mopa_bootstrap:
-    navbar: ~

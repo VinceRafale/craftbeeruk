@@ -21,9 +21,7 @@
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
         "doctrine/mongodb-odm-bundle": "3.0.*",
-        "friendsofsymfony/user-bundle": "*",
-        "mopa/bootstrap-bundle": "dev-master",
-        "twitter/bootstrap": "master"
+        "friendsofsymfony/user-bundle": "*"
     },
     "repositories": [
     {
@@ -48,15 +46,13 @@
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-        "Mopa\\Bundle\\BootstrapBundle\\Composer\\ScriptHandler::postInstallSymlinkTwitterBootstrap"
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ],
         "post-update-cmd": [
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-        "Mopa\\Bundle\\BootstrapBundle\\Composer\\ScriptHandler::postInstallSymlinkTwitterBootstrap"
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ]
     },
     "minimum-stability": "dev",

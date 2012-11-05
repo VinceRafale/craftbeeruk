@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if app.debug %}
+            <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+            <style type="text/css">
+            body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+                </style>
+            <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css">
+            {% endif %}
+            <title>Craft Beer UK - {% block title %}{% endblock %}</title>
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    {% block navbar %} 
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/">Craft Beer UK</a>
+            <div class="nav-collapse collapse">
+                <p class="navbar-text pull-right">
+                    {% block navbarRight %}{% endblock %}
+                </p>
+                <nav>
+                <ul class="nav">
+                    <li><a href="/">Home</a></li>
+                </ul>
+                        </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+            {% block content %}{% endblock %}
+                            </div>
+                        </div>
+                    </div>
     </body>
 </html>
