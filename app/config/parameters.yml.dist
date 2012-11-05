@@ -1,0 +1,12 @@
+parameters:
+    mailer_transport: smtp
+    mailer_host: localhost
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: 55a12baddfdbf8fe292707d114472f9f29846f89
+    database_path: null
+    mongodb_host: mongodb://localhost:27017
+    mongodb_options: {}
+    mongodb_database: craftbeer
+    
