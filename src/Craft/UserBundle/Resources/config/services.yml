@@ -1,0 +1,7 @@
+parameters:
+#    craft_user.example.class: Craft\UserBundle\Example
+
+services:
+#    craft_user.example:
+#        class: %craft_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

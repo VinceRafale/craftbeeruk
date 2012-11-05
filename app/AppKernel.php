@@ -21,6 +21,9 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new Craft\UserBundle\CraftUserBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

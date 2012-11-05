@@ -26,7 +26,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [ ]
+    bundles:        [MopaBootstrapBundle]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -45,7 +45,7 @@ doctrine_mongodb:
    document_managers:
      default:
        auto_mapping: true
-
+   auto_generate_hydrator_classes: true 
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
@@ -53,3 +53,10 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+fos_user:
+  db_driver: mongodb
+  firewall_name: main
+  user_class: Craft\UserBundle\Document\User
+  
+mopa_bootstrap:
+    navbar: ~

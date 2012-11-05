@@ -1,0 +1,3 @@
+craft_user_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: CraftUserBundle:Default:index }
