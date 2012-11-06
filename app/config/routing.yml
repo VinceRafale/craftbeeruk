@@ -1,6 +1,6 @@
 craft_user:
     resource: "@CraftUserBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /user
 
 # Internal routing configuration to handle ESI
 #_internal:
@@ -23,4 +23,4 @@ fos_user_resetting:
 
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix: /profile
+    prefix: /passwd
