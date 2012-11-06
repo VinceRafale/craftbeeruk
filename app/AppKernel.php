@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new Craft\UserBundle\CraftUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Craft\LocationBundle\CraftLocationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
