@@ -21,8 +21,10 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new Craft\UserBundle\CraftUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
+            
+            new Craft\UserBundle\CraftUserBundle(),
             new Craft\LocationBundle\CraftLocationBundle(),
         );
 
