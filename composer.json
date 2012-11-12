@@ -22,7 +22,8 @@
         "jms/di-extra-bundle": "1.1.*",
         "doctrine/mongodb-odm-bundle": "3.0.*",
         "friendsofsymfony/user-bundle": "*",
-        "friendsofsymfony/rest-bundle": "dev-master"
+        "friendsofsymfony/rest-bundle": "dev-master",
+        "guzzle/guzzle": "*"
     },
     "repositories": [
     {
