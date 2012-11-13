@@ -1,12 +1,13 @@
 <?php
 
-namespace Craft\Location\Bundle\Document;
+namespace Craft\LocationBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\Document(collection="locations")
+ * @MongoDB\Index(keys={"coordinates"="2d", "centre"="2d"})
  */
 class Location {
     
@@ -19,10 +20,13 @@ class Location {
     /** @MongoDB\EmbedMany(targetDocument="Coordinates") */
     protected $coordinates = [];
     
-    /** @MongoDB\String */
+    /** @MongoDB\EmbedOne(targetDocument="Coordinates") */
+    protected $centre;
+    
+    /** @MongoDB\Boolean */
     protected $real_ale;
     
-    /** @MongoDB\String */
+    /** @MongoDB\Boolean */
     protected $real_cider;
     
     /** @MongoDB\String */
@@ -33,6 +37,13 @@ class Location {
     
     /** @MongoDB\Date */
     protected $date;
+    
+    /** @MongoDB\EmbedMany(targetDocument="Regulars") */
+    protected $regularBeers;
+    
+    /** @MongoDB\EmbedMany(targetDocument="Regulars") */
+    protected $regularBreweries;
+    
     
     
 }

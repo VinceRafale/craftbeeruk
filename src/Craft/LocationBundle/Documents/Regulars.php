@@ -9,12 +9,11 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\EmbeddedDocument
  */
-class Coordinates {
+class Regulars {
     
-    /** @MongoDB\Float */
-    public $latitude;
+    /** @MongoDB\ReferenceOne */
+    public $documentId;
     
-    /** @MongoDB\Float */
-    public $longitude;
-    
+    /** @MongoDB\String */
+    public $regularity;
 }
