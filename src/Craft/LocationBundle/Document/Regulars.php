@@ -16,4 +16,48 @@ class Regulars {
     
     /** @MongoDB\String */
     public $regularity;
+
+    /**
+     * Set documentId
+     *
+     * @param $documentId
+     * @return Regulars
+     */
+    public function setDocumentId($documentId)
+    {
+        $this->documentId = $documentId;
+        return $this;
+    }
+
+    /**
+     * Get documentId
+     *
+     * @return $documentId
+     */
+    public function getDocumentId()
+    {
+        return $this->documentId;
+    }
+
+    /**
+     * Set regularity
+     *
+     * @param string $regularity
+     * @return Regulars
+     */
+    public function setRegularity($regularity)
+    {
+        $this->regularity = $regularity;
+        return $this;
+    }
+
+    /**
+     * Get regularity
+     *
+     * @return string $regularity
+     */
+    public function getRegularity()
+    {
+        return $this->regularity;
+    }
 }
