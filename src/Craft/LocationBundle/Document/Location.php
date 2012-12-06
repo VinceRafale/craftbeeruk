@@ -10,18 +10,20 @@ use Craft\UserBundle\Document as User;
 /**
  * @MongoDB\Document(collection="locations")
  * @MongoDB\Index(keys={"coordinates"="2d", "centre"="2d"})
+ * 
+ * @MongoDBUnique(fields="osmId")
  */
 class Location {
 
     /**
      * @MongoDB\Id 
      * 
-     * @MongoDBUnique(fields="osmId")
      */
     protected $id;
 
     /**
      * @MongoDB\Int
+     * @MongoDB\Index
      */
     protected $osmId;
 

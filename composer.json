@@ -20,9 +20,12 @@
         "sensio/generator-bundle": "2.1.*",
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
+        "jms/serializer-bundle": "*",
         "doctrine/mongodb-odm-bundle": "3.0.*",
         "friendsofsymfony/user-bundle": "*",
         "friendsofsymfony/rest-bundle": "dev-master",
+        "mopa/bootstrap-bundle": "dev-master",
+        "twitter/bootstrap": "master",
         "guzzle/guzzle": "*"
     },
     "repositories": [

@@ -16,15 +16,15 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new JMS\AopBundle\JMSAopBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new JMS\AopBundle\JMSAopBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-            new \JMS\SerializerBundle\JMSSerializerBundle,
-            
+            new JMS\SerializerBundle\JMSSerializerBundle($this),
+            new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new Craft\UserBundle\CraftUserBundle(),
             new Craft\LocationBundle\CraftLocationBundle(),
         );
