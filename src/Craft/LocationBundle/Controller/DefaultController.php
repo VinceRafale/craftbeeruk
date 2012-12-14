@@ -6,18 +6,31 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Guzzle\Service\Client as Guzzle;
+use Ricklab\Location;
 
 class DefaultController extends Controller {
 
     /**
-     * @Route("/locate/{longitude}/{latitude}")
+     * @Route("/around-me")
      * @Template()
      */
-    public function indexAction($longitude, $latitude) {
-
-
-        $foo['name'] = 'Location';
-        return $foo;
+    public function indexAction() {
+        
+        return $this->render('CraftLocationBundle:Default:index.html.twig');
+    }
+    
+    /**
+     * @Route("/around/{latitude}/{longitude}/{limit}")
+     */
+    public function findAtLocation($latitude, $longitude, $limit) {
+        
+        $point  = new Location\Point((float)$latitude, (float)$longitude);
+        
+        $locations = $this->get('location_service')->getLocationsAround($point, $limit);
+        
+        var_dump($locations);
+        
+        return new \Symfony\Component\HttpFoundation\Response();
     }
 
     /**

@@ -9,7 +9,7 @@ use Craft\UserBundle\Document as User;
 
 /**
  * @MongoDB\Document(collection="locations")
- * @MongoDB\Index(keys={"coordinates"="2d", "centre"="2d"})
+ * @MongoDB\Index(keys={"coordinates"="2d"})
  * 
  * @MongoDBUnique(fields="osmId")
  */
@@ -29,6 +29,13 @@ class Location {
 
     /** @MongoDB\String */
     protected $name;
+    
+    /**
+     *
+     * @MongoDB\String
+     * @MongoDB\Index
+     */
+    protected $slug;
 
     /** @MongoDB\String */
     protected $amenity;
@@ -38,7 +45,11 @@ class Location {
 
     /** @MongoDB\EmbedOne(targetDocument="Coordinates") */
     protected $centre;
-
+    
+    /** @MongoDB\Distance */
+    protected $distance;
+   
+    
     /** @MongoDB\Boolean */
     protected $real_ale;
 
@@ -531,5 +542,27 @@ class Location {
     public function getCaskDispense()
     {
         return $this->caskDispense;
+    }
+
+    /**
+     * Set distance
+     *
+     * @param string $distance
+     * @return \Location
+     */
+    public function setDistance($distance)
+    {
+        $this->distance = $distance;
+        return $this;
+    }
+
+    /**
+     * Get distance
+     *
+     * @return string $distance
+     */
+    public function getDistance()
+    {
+        return $this->distance;
     }
 }

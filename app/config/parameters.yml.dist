@@ -9,4 +9,6 @@ parameters:
     mongodb_host: mongodb://localhost:27017
     mongodb_options: {}
     mongodb_database: craftbeer
+    #Distance unit, either "miles" or "km"
+    distance_unit: miles
     

@@ -3,9 +3,33 @@
 {% block head_style %}
 {% stylesheets filter='less,cssrewrite,?yui_css'
    '@MopaBootstrapBundle/Resources/public/less/mopabootstrapbundle.less'
+   '@CraftCoreBundle/Resources/public/less/*'
 %}
 <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
 {% endstylesheets %}
 {% endblock head_style %}
+{% block headline %}
+Craft Beer UK
+{% endblock %}
+{% block navbar %}
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="{{url('craft_core_default_index')}}">Craft Beer UK</a>
+        <ul class="nav pull-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    Account
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{url('fos_user_security_login')}}">Login</a></li>
+                    <li><a href="{{url('fos_user_registration_register')}}">Register</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% endblock %}
 
-{% block navbar %}{% endblock navbar %}

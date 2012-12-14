@@ -26,7 +26,8 @@
         "friendsofsymfony/rest-bundle": "dev-master",
         "mopa/bootstrap-bundle": "dev-master",
         "twitter/bootstrap": "master",
-        "guzzle/guzzle": "*"
+        "guzzle/guzzle": "*",
+        "Ricklab/Location":"*"
     },
     "repositories": [
     {
@@ -44,6 +45,10 @@
                 "type": "zip"
             }
         }
+    },
+    {
+        "type":"git",
+        "url":"https://github.com/rickogden/Location.git"
     }
     ],
     "scripts": {

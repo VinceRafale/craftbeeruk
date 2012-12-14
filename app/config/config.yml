@@ -26,7 +26,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [MopaBootstrapBundle]
+    bundles:        [MopaBootstrapBundle, CraftLocationBundle]
     filters:
         less: 
           node: /usr/local/bin/node
@@ -59,3 +59,8 @@ fos_user:
 
 mopa_bootstrap:
   navbar: ~
+  
+services: 
+  location_service:
+    class: Craft\LocationBundle\Services\Location
+    arguments: [%distance_unit%, @doctrine_mongodb.odm.document_manager]

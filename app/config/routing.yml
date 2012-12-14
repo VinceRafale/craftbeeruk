@@ -1,7 +1,12 @@
+craft_core:
+    resource: "@CraftCoreBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 craft_location:
     resource: "@CraftLocationBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /location
 
 craft_user:
     resource: "@CraftUserBundle/Resources/config/routing.yml"

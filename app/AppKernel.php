@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new Craft\UserBundle\CraftUserBundle(),
             new Craft\LocationBundle\CraftLocationBundle(),
+            new Craft\CoreBundle\CraftCoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
