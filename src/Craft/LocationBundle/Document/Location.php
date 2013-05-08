@@ -5,7 +5,6 @@ namespace Craft\LocationBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
-use Craft\UserBundle\Document as User;
 
 /**
  * @MongoDB\Document(collection="locations")
@@ -68,14 +67,11 @@ class Location {
     /** @MongoDB\String */
     protected $address;
 
-    /** @MongoDB\Date */
-    protected $updated;
+    /** @MongoDB\EmbedMany(targetDocument="User") */
+    protected $updated = [];
 
-    /** @MongoDB\Date */
+    /** @MongoDB\EmbedOne(targetDocument="User") */
     protected $created;
-
-    /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") */
-    protected $updatedBy;
     
     /** @MongoDB\Int */
     protected $caskLines;
@@ -85,12 +81,15 @@ class Location {
     
     /** @MongoDB\String */
     protected $caskDispense;
+    
+    /** @MongoDB\String */
+    protected $beerOrigins = [];
 
     /** @MongoDB\EmbedMany(targetDocument="Regulars") */
-    protected $regularBeers;
+    protected $regularBeers = [];
 
     /** @MongoDB\EmbedMany(targetDocument="Regulars") */
-    protected $regularBreweries;
+    protected $regularBreweries = [];
 
     public function __construct() {
         $this->coordinates = new \Doctrine\Common\Collections\ArrayCollection();
@@ -276,65 +275,7 @@ class Location {
         return $this->email;
     }
 
-    /**
-     * Set updated
-     *
-     * @param date $updated
-     * @return Location
-     */
-    public function setUpdated($updated) {
-        $this->updated = $updated;
-        return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return date $updated
-     */
-    public function getUpdated() {
-        return $this->updated;
-    }
-
-    /**
-     * Set created
-     *
-     * @param date $created
-     * @return Location
-     */
-    public function setCreated($created) {
-        $this->created = $created;
-        return $this;
-    }
-
-    /**
-     * Get created
-     *
-     * @return date $created
-     */
-    public function getCreated() {
-        return $this->created;
-    }
-
-    /**
-     * Set updatedBy
-     *
-     * @param Craft\UserBundle\Document\User $updatedBy
-     * @return Location
-     */
-    public function setUpdatedBy(\Craft\UserBundle\Document\User $updatedBy) {
-        $this->updatedBy = $updatedBy;
-        return $this;
-    }
-
-    /**
-     * Get updatedBy
-     *
-     * @return Craft\UserBundle\Document\User $updatedBy
-     */
-    public function getUpdatedBy() {
-        return $this->updatedBy;
-    }
+    
 
     /**
      * Add regularBeers
@@ -564,5 +505,164 @@ class Location {
     public function getDistance()
     {
         return $this->distance;
+    }
+
+   
+   
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return \Location
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string $slug
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Add updated
+     *
+     * @param Craft\LocationBundle\Document\User $updated
+     */
+    public function addUpdated(\Craft\LocationBundle\Document\User $updated)
+    {
+        $this->updated[] = $updated;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return Doctrine\Common\Collections\Collection $updated
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set created
+     *
+     * @param Craft\LocationBundle\Document\User $created
+     * @return \Location
+     */
+    public function setCreated(\Craft\LocationBundle\Document\User $created)
+    {
+        $this->created = $created;
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return Craft\LocationBundle\Document\User $created
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Add coordinates
+     *
+     * @param Craft\LocationBundle\Document\Coordinates $coordinates
+     */
+    public function addCoordinate(\Craft\LocationBundle\Document\Coordinates $coordinates)
+    {
+        $this->coordinates[] = $coordinates;
+    }
+
+    /**
+    * Remove coordinates
+    *
+    * @param <variableType$coordinates
+    */
+    public function removeCoordinate(\Craft\LocationBundle\Document\Coordinates $coordinates)
+    {
+        $this->coordinates->removeElement($coordinates);
+    }
+
+    /**
+    * Remove updated
+    *
+    * @param <variableType$updated
+    */
+    public function removeUpdated(\Craft\LocationBundle\Document\User $updated)
+    {
+        $this->updated->removeElement($updated);
+    }
+
+    /**
+     * Set beerOrigins
+     *
+     * @param string $beerOrigins
+     * @return self
+     */
+    public function setBeerOrigins($beerOrigins)
+    {
+        $this->beerOrigins = $beerOrigins;
+        return $this;
+    }
+
+    /**
+     * Get beerOrigins
+     *
+     * @return string $beerOrigins
+     */
+    public function getBeerOrigins()
+    {
+        return $this->beerOrigins;
+    }
+
+    /**
+     * Add regularBeers
+     *
+     * @param Craft\LocationBundle\Document\Regulars $regularBeers
+     */
+    public function addRegularBeer(\Craft\LocationBundle\Document\Regulars $regularBeers)
+    {
+        $this->regularBeers[] = $regularBeers;
+    }
+
+    /**
+    * Remove regularBeers
+    *
+    * @param <variableType$regularBeers
+    */
+    public function removeRegularBeer(\Craft\LocationBundle\Document\Regulars $regularBeers)
+    {
+        $this->regularBeers->removeElement($regularBeers);
+    }
+
+    /**
+     * Add regularBreweries
+     *
+     * @param Craft\LocationBundle\Document\Regulars $regularBreweries
+     */
+    public function addRegularBrewerie(\Craft\LocationBundle\Document\Regulars $regularBreweries)
+    {
+        $this->regularBreweries[] = $regularBreweries;
+    }
+
+    /**
+    * Remove regularBreweries
+    *
+    * @param <variableType$regularBreweries
+    */
+    public function removeRegularBrewerie(\Craft\LocationBundle\Document\Regulars $regularBreweries)
+    {
+        $this->regularBreweries->removeElement($regularBreweries);
     }
 }

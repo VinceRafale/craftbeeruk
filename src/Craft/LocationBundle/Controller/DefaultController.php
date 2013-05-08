@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Guzzle\Service\Client as Guzzle;
+use Craft\LocationBundle\Document;
 use Ricklab\Location;
 
 class DefaultController extends Controller {
@@ -28,7 +29,9 @@ class DefaultController extends Controller {
         
         $locations = $this->get('location_service')->getLocationsAround($point, $limit);
         
-        var_dump($locations);
+        foreach($locations as $location) {
+            var_dump($location);
+        }
         
         return new \Symfony\Component\HttpFoundation\Response();
     }
@@ -58,7 +61,7 @@ class DefaultController extends Controller {
                 if($locationDbObject === null) {
                     $locationDbObject = new \Craft\LocationBundle\Document\Location();
                     $locationDbObject->setOsmId($id);
-                    $locationDbObject->setCreated(new \DateTime());
+                    $locationDbObject->setCreated(new Document\User(new \Craft\UserBundle\Document\User(), $_SERVER['REMOTE_ADDR']));
                 }
                 $tags = [];
                 foreach ($location->getElementsByTagName('tag') as $tag) {
@@ -82,6 +85,26 @@ class DefaultController extends Controller {
         }
         
             return $return;
+    }
+    /** @Route("/add") **/
+    public function addAction(\Symfony\Component\HttpFoundation\Request $request) {
+        if($request->isMethod('POST')) {
+            
+        }
+        
+        $form = $this->createFormBuilder(new Document\Location())->getForm();
+        return $form->createView();
+        
+    }
+    
+    /** @Route("/edit-osm/{value}") */
+    public function editAction($value) {
+        
+        $location = $this->get('location_service')->findLocationByOsmId($value);
+        
+        $form = $this->createForm($location);
+        
+        echo $form;
     }
     
     /**

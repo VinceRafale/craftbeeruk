@@ -183,4 +183,14 @@ class Comment {
     {
         return $this->foundHelpful;
     }
+
+    /**
+    * Remove foundHelpful
+    *
+    * @param <variableType$foundHelpful
+    */
+    public function removeFoundHelpful(\Craft\UserBundle\Document\User $foundHelpful)
+    {
+        $this->foundHelpful->removeElement($foundHelpful);
+    }
 }

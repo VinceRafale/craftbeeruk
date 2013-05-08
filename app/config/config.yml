@@ -56,6 +56,10 @@ fos_user:
   db_driver: mongodb
   firewall_name: main
   user_class: Craft\UserBundle\Document\User
+#rest API
+fos_rest:
+  routing_loader:
+    default_format: json
 
 mopa_bootstrap:
   navbar: ~
