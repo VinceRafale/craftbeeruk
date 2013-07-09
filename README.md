@@ -11,7 +11,9 @@ Proposed Features
 * Details of locations including (but not limited to):
     * Address
     * No. of keg/cask lines
-    * Regular breweries/beers
+    * Bottle Range
+    * Off sale available
+    * Origins of beer
     * Photos
     * User comments/ratings
 * Craft beer outlets "around me"
