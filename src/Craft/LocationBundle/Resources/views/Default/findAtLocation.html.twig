@@ -1,0 +1,6 @@
+{# empty Twig template #}
+<ul>
+    {% for location in locations %}
+    <li><h2><a href="{{path('craft_location_default_view', {'slug':location.slug})}}">{{location.name}}</a></h2></li>
+    {% endfor %}
+</ul>

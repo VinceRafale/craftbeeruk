@@ -2,63 +2,65 @@
 
 namespace Craft\LocationBundle\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
+
 
 /**
- * @MongoDB\EmbeddedDocument
+ * Craft\LocationBundle\Document\Coordinates
  */
-class Coordinates {
-    
-    /** @MongoDB\Float */
-    public $latitude;
-    
-    /** @MongoDB\Float */
-    public $longitude;
-    
+class Coordinates
+{
+    /**
+     * @var string $type
+     */
+    protected $type;
 
     /**
-     * Set latitude
-     *
-     * @param float $latitude
-     * @return Coordinates
+     * @var float $coordinates
      */
-    public function setLatitude($latitude)
+    protected $coordinates;
+
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return self
+     */
+    public function setType($type)
     {
-        $this->latitude = $latitude;
+        $this->type = $type;
         return $this;
     }
 
     /**
-     * Get latitude
+     * Get type
      *
-     * @return float $latitude
+     * @return string $type
      */
-    public function getLatitude()
+    public function getType()
     {
-        return $this->latitude;
+        return $this->type;
     }
 
     /**
-     * Set longitude
+     * Set coordinates
      *
-     * @param float $longitude
-     * @return Coordinates
+     * @param float $coordinates
+     * @return self
      */
-    public function setLongitude($longitude)
+    public function setCoordinates($coordinates)
     {
-        $this->longitude = $longitude;
+        $this->coordinates = $coordinates;
         return $this;
     }
 
     /**
-     * Get longitude
+     * Get coordinates
      *
-     * @return float $longitude
+     * @return float $coordinates
      */
-    public function getLongitude()
+    public function getCoordinates()
     {
-        return $this->longitude;
+        return $this->coordinates;
     }
 }

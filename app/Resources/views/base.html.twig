@@ -1,12 +1,13 @@
 {% extends 'MopaBootstrapBundle::base.html.twig' %}
 {% block title %}Craft Beer UK{% endblock %}
 {% block head_style %}
-{% stylesheets filter='less,cssrewrite,?yui_css'
-   '@MopaBootstrapBundle/Resources/public/less/mopabootstrapbundle.less'
-   '@CraftCoreBundle/Resources/public/less/*'
+{% stylesheets filter='sass,cssrewrite,?yui_css'
+   '@MopaBootstrapBundle/Resources/public/sass/mopabootstrapbundle.scss'
 %}
 <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
 {% endstylesheets %}
+{% block page_style %}
+{% endblock %}
 {% endblock head_style %}
 {% block headline %}
 Craft Beer UK

@@ -15,6 +15,16 @@ class User extends BaseUser {
      */
     protected $id;
     
+    /**
+     * @MongoDB\String
+     */
+    protected $twitter_username;
+    
+    /**
+     * @MongoDB\String
+     */
+    protected $twitterID;
+    
     
     public function __construct() {
         parent::__construct();

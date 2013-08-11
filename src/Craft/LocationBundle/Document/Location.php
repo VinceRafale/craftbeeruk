@@ -8,7 +8,7 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 
 /**
  * @MongoDB\Document(collection="locations")
- * @MongoDB\Index(keys={"coordinates"="2d"})
+ * @MongoDB\Index(keys={"geolocation"="2dsphere"})
  * 
  * @MongoDBUnique(fields="osmId")
  */
@@ -36,14 +36,14 @@ class Location {
      */
     protected $slug;
 
-    /** @MongoDB\String */
-    protected $amenity;
+    /** 
+     * @MongoDB\String
+     * @MongoDB\Index
+     */
+    protected $outlet;
 
-    /** @MongoDB\EmbedMany(targetDocument="Coordinates") */
-    protected $coordinates = [];
-
-    /** @MongoDB\EmbedOne(targetDocument="Coordinates") */
-    protected $centre;
+    /** @MongoDB\EmbedOne(targetDocument="Geolocation") */
+    protected $geolocation;
     
     /** @MongoDB\Distance */
     protected $distance;
@@ -82,20 +82,8 @@ class Location {
     /** @MongoDB\String */
     protected $caskDispense;
     
-    /** @MongoDB\String */
+    /** @MongoDB\Collection */
     protected $beerOrigins = [];
-
-    /** @MongoDB\EmbedMany(targetDocument="Regulars") */
-    protected $regularBeers = [];
-
-    /** @MongoDB\EmbedMany(targetDocument="Regulars") */
-    protected $regularBreweries = [];
-
-    public function __construct() {
-        $this->coordinates = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->regularBeers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->regularBreweries = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Get id
@@ -126,75 +114,8 @@ class Location {
         return $this->osmId;
     }
 
-    /**
-     * Add coordinates
-     *
-     * @param Craft\LocationBundle\Document\Coordinates $coordinates
-     */
-    public function addCoordinates(\Craft\LocationBundle\Document\Coordinates $coordinates) {
-        $this->coordinates[] = $coordinates;
-        $this->updateCentre();
-        return $this;
-    }
-
-    public function setCoordinates(Array $coords) {
-        $this->coordinates = [];
-        $this->centre = null;
-        foreach ($coords as $i) {
-            $c = new Coordinates();
-            $c->latitude = $i['lat'];
-            $c->longitude = $i['lon'];
-            $this->addCoordinates($c);
-        }
-    }
-
-    protected function updateCentre() {
-        $latSum = 0;
-        $lonSum = 0;
-        foreach ($this->coordinates as $coordinate) {
-            $latSum += $coordinate->getLatitude();
-            $lonSum += $coordinate->getLongitude();
-        }
-
-        $latAverage = $latSum / count($this->coordinates);
-        $lonAverage = $lonSum / count($this->coordinates);
-
-        $centre = new Coordinates();
-        $centre->setLatitude($latAverage);
-        $centre->setLongitude($lonAverage);
-        $this->setCentre($centre);
-        return $this;
-    }
-
-    /**
-     * Get coordinates
-     *
-     * @return Doctrine\Common\Collections\Collection $coordinates
-     */
-    public function getCoordinates() {
-        return $this->coordinates;
-    }
-
-    /**
-     * Set centre
-     *
-     * @param Craft\LocationBundle\Document\Coordinates $centre
-     * @return Location
-     */
-    protected function setCentre(\Craft\LocationBundle\Document\Coordinates $centre) {
-        $this->centre = $centre;
-        return $this;
-    }
-
-    /**
-     * Get centre
-     *
-     * @return Craft\LocationBundle\Document\Coordinates $centre
-     */
-    public function getCentre() {
-        return $this->centre;
-    }
-
+    
+    
     /**
      * Set real_ale
      *
@@ -371,26 +292,6 @@ class Location {
      */
     public function getName() {
         return $this->name;
-    }
-
-    /**
-     * Set amenity
-     *
-     * @param string $amenity
-     * @return Location
-     */
-    public function setAmenity($amenity) {
-        $this->amenity = $amenity;
-        return $this;
-    }
-
-    /**
-     * Get amenity
-     *
-     * @return string $amenity
-     */
-    public function getAmenity() {
-        return $this->amenity;
     }
 
     /**
@@ -585,16 +486,6 @@ class Location {
     }
 
     /**
-    * Remove coordinates
-    *
-    * @param <variableType$coordinates
-    */
-    public function removeCoordinate(\Craft\LocationBundle\Document\Coordinates $coordinates)
-    {
-        $this->coordinates->removeElement($coordinates);
-    }
-
-    /**
     * Remove updated
     *
     * @param <variableType$updated
@@ -605,9 +496,32 @@ class Location {
     }
 
     /**
+     * Set outlet
+     *
+     * @param string $outlet
+     * @return self
+     */
+    public function setOutlet($outlet)
+    {
+        $this->outlet = $outlet;
+        return $this;
+    }
+
+    /**
+     * Get outlet
+     *
+     * @return string $outlet
+     */
+    public function getOutlet()
+    {
+        return $this->outlet;
+    }
+
+
+    /**
      * Set beerOrigins
      *
-     * @param string $beerOrigins
+     * @param collection $beerOrigins
      * @return self
      */
     public function setBeerOrigins($beerOrigins)
@@ -619,7 +533,7 @@ class Location {
     /**
      * Get beerOrigins
      *
-     * @return string $beerOrigins
+     * @return collection $beerOrigins
      */
     public function getBeerOrigins()
     {
@@ -627,42 +541,36 @@ class Location {
     }
 
     /**
-     * Add regularBeers
+     * Set geolocation
      *
-     * @param Craft\LocationBundle\Document\Regulars $regularBeers
+     * @param Craft\LocationBundle\Document\Geolocation $geolocation
+     * @return self
      */
-    public function addRegularBeer(\Craft\LocationBundle\Document\Regulars $regularBeers)
+    public function setGeolocation($geolocation)
     {
-        $this->regularBeers[] = $regularBeers;
+        if($geolocation instanceof Geolocation) {
+            $this->geolocation = $geolocation;
+            return $this;
+        }
+        
+        $geolocation = Geolocation::fromGeoJson($geolocation);
+        
+        $this->geolocation = $geolocation;
+        return $this;
     }
 
     /**
-    * Remove regularBeers
-    *
-    * @param <variableType$regularBeers
-    */
-    public function removeRegularBeer(\Craft\LocationBundle\Document\Regulars $regularBeers)
-    {
-        $this->regularBeers->removeElement($regularBeers);
-    }
-
-    /**
-     * Add regularBreweries
+     * Get geolocation
      *
-     * @param Craft\LocationBundle\Document\Regulars $regularBreweries
+     * @return Craft\LocationBundle\Document\Geolocation $geolocation
      */
-    public function addRegularBrewerie(\Craft\LocationBundle\Document\Regulars $regularBreweries)
+    public function getGeolocation()
     {
-        $this->regularBreweries[] = $regularBreweries;
+        return $this->geolocation;
     }
-
-    /**
-    * Remove regularBreweries
-    *
-    * @param <variableType$regularBreweries
-    */
-    public function removeRegularBrewerie(\Craft\LocationBundle\Document\Regulars $regularBreweries)
+    public function __construct()
     {
-        $this->regularBreweries->removeElement($regularBreweries);
+        $this->updated = new \Doctrine\Common\Collections\ArrayCollection();
     }
+    
 }
