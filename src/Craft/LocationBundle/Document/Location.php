@@ -48,6 +48,8 @@ class Location {
     /** @MongoDB\Distance */
     protected $distance;
    
+    /** @MongoDB\String */
+    protected $description;
     
     /** @MongoDB\Boolean */
     protected $real_ale;
@@ -573,4 +575,26 @@ class Location {
         $this->updated = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string $description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }

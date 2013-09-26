@@ -31,8 +31,9 @@ class Location
      * 
      * @param string $unit
      * @param \Doctrine\ODM\MongoDB\DocumentManager $doctrine
+     * @param IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl
      */
-    public function __construct($unit, \Doctrine\ODM\MongoDB\DocumentManager $doctrine)
+    public function __construct($unit, \Doctrine\ODM\MongoDB\DocumentManager $doctrine, \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl)
     {
         $this->unit = $unit;
         $this->radius = Loc\Earth::radius($unit);
@@ -49,17 +50,17 @@ class Location
     public function getLocationsAround(Loc\Point $point, $limit, $offset = 0)
     {
         list($x, $y) = $point->jsonSerialize()['coordinates'];
-       /* $locations = $this->getMongoLocationCollection()->createQueryBuilder()
-                ->near($point->jsonSerialize());
-        */
-        
+        /* $locations = $this->getMongoLocationCollection()->createQueryBuilder()
+          ->near($point->jsonSerialize());
+         */
+
         $locations = $this->doctrine->getDocumentCollection('CraftLocationBundle:Location')->aggregate(['$geoNear' => [
                 'near' => $point->jsonSerialize(),
                 'limit' => (int) $limit,
                 'skip' => $offset,
                 'spherical' => true,
-            'distanceField' => 'distance']]);
-       /*  $locations = $this->getMongoLocationCollection()
+                'distanceField' => 'distance']]);
+        /*  $locations = $this->getMongoLocationCollection()
           ->createQueryBuilder()
           ->geoNear($x, $y)
           ->limit((int) $limit)
@@ -86,15 +87,15 @@ class Location
         $response = $osm->get('xapi?*[craft_beer=yes]')->send();
     }
 
-    public function updateLocation(Document\Location $location, \Craft\UserBundle\Document\User $user)
+    public function updateLocation(Document\Location $location, \Craft\UserBundle\Document\User $user, \Symfony\Component\HttpFoundation\Request $request)
     {
         if ($location->getId() == null) {
-            $this->insertLocation($location, $user);
+            $this->insertLocation($location, $user, $request);
         } else {
-            $updateInfo = new Document\User($user, $_SERVER['REMOTE_ADDR']);
+            $updateInfo = new Document\User($user, $request->getClientIp());
             $location->addUpdated($updateInfo);
-            $oldDoc = new Document\LocationHistory($this->findLocation('id', $location->getId()));
-            $this->doctrine->persist($oldDoc);
+            //$oldDoc = new Document\LocationHistory($this->findLocation('id', $location->getId()));
+            //   $this->doctrine->persist($oldDoc);
             $this->doctrine->flush();
         }
 
@@ -103,17 +104,14 @@ class Location
 
     public function insertLocation(Document\Location $location, \Craft\UserBundle\Document\User $user, \Symfony\Component\HttpFoundation\Request $request)
     {
-        
+
         $location->setSlug($this->generateSlug($location->getName()));
         $userDocument = new Document\User($user, $request->getClientIp());
         $location->setCreated($userDocument);
-       var_dump($location->getGeolocation());
         $this->doctrine->persist($location);
         $this->doctrine->flush();
-    }
-    
-    public function locationForm() {
-        
+
+        return $this;
     }
 
     /**
@@ -173,18 +171,19 @@ class Location
     {
         return $this->unit;
     }
-    
-    protected function generateSlug($text) {
+
+    protected function generateSlug($text)
+    {
         $slugifier = new \BaconStringUtils\Slugifier();
         $slug = $slugifier->slugify($text);
         $num = 0;
         $count = $this->getMongoLocationCollection()->findBy(['slug' => $slug])->count();
-        while($count > 0) {
+        while ($count > 0) {
             $num++;
-            $slug = $slugifier->slugify($text.' '.$num);
+            $slug = $slugifier->slugify($text . ' ' . $num);
             $count = $this->getMongoLocationCollection()->findBy(['slug' => $slug])->count();
         }
-        
+
         return $slug;
     }
 

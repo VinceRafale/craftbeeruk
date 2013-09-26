@@ -1,8 +1,9 @@
 jQuery(document).ready(function() {
+    var baseUrl = jQuery('.navbar-brand').attr('href');
     var watch = navigator.geolocation.watchPosition(function(position) {
-        var baseUrl = jQuery('.brand').attr('href');
+        
         jQuery.ajax({
-            url:baseUrl+'location/around/'+position.coords.latitude+'/'+position.coords.longitude+'/1',
+            url:baseUrl+'location/around/'+position.coords.latitude+'/'+position.coords.longitude+'/10',
             success: function(data) {
                 jQuery('#ajaxResults').html(data);
             }

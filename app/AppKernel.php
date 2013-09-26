@@ -5,6 +5,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
+
     public function registerBundles()
     {
         $bundles = array(
@@ -21,15 +22,21 @@ class AppKernel extends Kernel
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\AopBundle\JMSAopBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-            
             new FOS\UserBundle\FOSUserBundle(),
-           // new FOS\TwitterBundle\FOSTwitterBundle(),
+            // new FOS\TwitterBundle\FOSTwitterBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new FOS\CommentBundle\FOSCommentBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle($this),
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new Craft\UserBundle\CraftUserBundle(),
             new Craft\LocationBundle\CraftLocationBundle(),
             new Craft\CoreBundle\CraftCoreBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
+        new Sonata\jQueryBundle\SonatajQueryBundle(),
+            new Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle(),
+        new Sonata\AdminBundle\SonataAdminBundle(),
+       //     new Sonata\UserBundle\SonataUserBundle('FOSUserBundle'),
+            new Craft\ApiBundle\CraftApiBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -44,6 +51,7 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $loader->load(__DIR__ . '/config/config_' . $this->getEnvironment() . '.yml');
     }
+
 }

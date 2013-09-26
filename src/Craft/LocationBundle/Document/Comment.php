@@ -3,46 +3,23 @@
 namespace Craft\LocationBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
-use Craft\UserBundle\Document as User;
+use FOS\CommentBundle\Document\Comment as BaseComment;
+use FOS\CommentBundle\Model\SignedCommentInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @MongoDB\Document(collection="comments")
+ * @MongoDB\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
-class Comment {
-    
+class Comment extends BaseComment implements SignedCommentInterface {
+   
     /** @MongoDB\Id */
     protected $id;
     
-    /**
-     * @MongoDB\ReferenceOne(targetDocument="Location")
-     * @MongoDB\Index
-     */
-    protected $location;
+    /** @MongoDB\ReferenceOne(targetDocument="Craft\LocationBundle\Document\Thread") */
+    protected $thread;
     
-    /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") 
-     * @MongoDB\Index
-     */
+    /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") */
     protected $author;
-    
-    /** @MongoDB\Int */
-    protected $rating;
-    
-    /** @MongoDB\String */
-    protected $comment;
-    
-    /** 
-     * @MongoDB\Date
-     * @MongoDB\Index
-     */
-    protected $created;
-    
-    /** @MongoDB\ReferenceMany(targetDocument="Craft\UserBundle\Document\User") */
-    protected $foundHelpful = [];
-    public function __construct()
-    {
-        $this->foundHelpful = new \Doctrine\Common\Collections\ArrayCollection();
-    }
     
     /**
      * Get id
@@ -55,34 +32,12 @@ class Comment {
     }
 
     /**
-     * Set location
-     *
-     * @param Craft\LocationBundle\Document\Location $location
-     * @return Comment
-     */
-    public function setLocation(\Craft\LocationBundle\Document\Location $location)
-    {
-        $this->location = $location;
-        return $this;
-    }
-
-    /**
-     * Get location
-     *
-     * @return Craft\LocationBundle\Document\Location $location
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
      * Set author
      *
-     * @param Craft\UserBundle\Document\User $author
+     * @param UserInterface $author
      * @return Comment
      */
-    public function setAuthor(\Craft\UserBundle\Document\User $author)
+    public function setAuthor(UserInterface $author)
     {
         $this->author = $author;
         return $this;
@@ -96,6 +51,15 @@ class Comment {
     public function getAuthor()
     {
         return $this->author;
+    }
+    
+    public function getAuthorName()
+    {
+        if(null === $this->getAuthor()) {
+            return 'Anonymous';
+        }
+        
+        return $this->getAuthor()->getUsername();
     }
 
     /**
@@ -192,5 +156,27 @@ class Comment {
     public function removeFoundHelpful(\Craft\UserBundle\Document\User $foundHelpful)
     {
         $this->foundHelpful->removeElement($foundHelpful);
+    }
+
+    /**
+     * Set thread
+     *
+     * @param \FOS\CommentBundle\Model\ThreadInterface $thread
+     * @return self
+     */
+    public function setThread(\FOS\CommentBundle\Model\ThreadInterface $thread)
+    {
+        $this->thread = $thread;
+        return $this;
+    }
+
+    /**
+     * Get thread
+     *
+     * @return Craft\LocationBundle\Document\Thread $thread
+     */
+    public function getThread()
+    {
+        return $this->thread;
     }
 }

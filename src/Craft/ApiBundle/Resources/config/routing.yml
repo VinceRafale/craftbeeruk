@@ -1,0 +1,9 @@
+craft_api_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: CraftApiBundle:Default:index }
+
+locations:
+  pattern: /location
+  type: rest
+  resource: Craft\ApiBundle\Controller\LocationController
+  

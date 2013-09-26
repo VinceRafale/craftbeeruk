@@ -2,7 +2,7 @@
 
 namespace Craft\LocationBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Guzzle\Service\Client as Guzzle;
@@ -89,7 +89,7 @@ class DefaultController extends Controller
         return $return;
     }
 
-    /** 
+    /**
      * @Route("/add")
      * @Template
      */
@@ -97,38 +97,63 @@ class DefaultController extends Controller
     {
         $location = new Document\Location();
         $form = $this->createForm(new Type\LocationType(), $location);
-        
-        
+
+
         $form->handleRequest($request);
-        
-        if($form->isValid()) {
+
+        if ($form->isValid()) {
             $this->get('location_service')->insertLocation($location, $this->getUser(), $request);
+            return $this->redirect($this->generateUrl('craft_location_default_view', ['slug' => $location->getSlug()]));
         }
-        
+
         return ['form' => $form->createView()];
-        
-        
     }
 
-    /** @Route("/edit-osm/{slug}") */
-    public function editAction($value)
-    {
-
-        $location = $this->get('location_service')->findLocationBySlug($slug);
-
-        $form = $this->createForm($location);
-
-        echo $form;
-    }
-    
-    /** @Route("/view/{slug}")
-     * @Template 
+    /** @Route("/edit/{slug}") 
+     * @Template("CraftLocationBundle:Default:add.html.twig")
      */
-    public function viewAction($slug) {
+    public function editAction($slug, \Symfony\Component\HttpFoundation\Request $request)
+    {
+        
+        $location = $this->get('location_service')->findLocationBySlug($slug);
+
+        $form = $this->createForm(new Type\LocationType(), $location);
+        $form->remove('add')
+                ->add('edit', 'submit');
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $this->get('location_service')->updateLocation($location, $this->getUser(), $request);
+            return $this->redirect($this->generateUrl('craft_location_default_view', ['slug' => $location->getSlug()]));
+        }
+
+        return ['form' => $form->createView()];
+    }
+
+    /** @Route("/view/{slug}")
+     * @Template
+     */
+    public function viewAction($slug, \Symfony\Component\HttpFoundation\Request $request)
+    {
         $location = $this->get('location_service')->findLocationBySlug($slug);
         
-        return ['location' => $location];
+        //Comment loading
+        $id = $location->getId();
+    $thread = $this->container->get('fos_comment.manager.thread')->findThreadById($id);
+    if (null === $thread) {
+        $thread = $this->container->get('fos_comment.manager.thread')->createThread();
+        $thread->setId($id);
+        $thread->setPermalink($request->getUri());
+        
+        // Add the thread
+        $this->container->get('fos_comment.manager.thread')->saveThread($thread);
     }
+     $comments = $this->container->get('fos_comment.manager.comment')->findCommentTreeByThread($thread);
+    //end comment loading
+
+        return ['location' => $location, 'comments' => $comments];
+    }
+
     /**
      * 
      * @param string $repository

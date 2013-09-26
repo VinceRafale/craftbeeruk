@@ -3,6 +3,8 @@ imports:
     - { resource: security.yml }
 
 framework:
+    http_method_override: true
+    translator: ~
     #esi:             ~
     #translator:      { fallback: "%locale%" }
     secret:          "%secret%"
@@ -26,7 +28,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [MopaBootstrapBundle, CraftLocationBundle]
+    bundles:        [MopaBootstrapBundle, CraftLocationBundle, FOSCommentBundle]
     filters:
       #  less: 
       #    node: /usr/local/bin/node
@@ -69,14 +71,35 @@ fos_user:
   firewall_name: main
   user_class: Craft\UserBundle\Document\User
 #rest API
+fos_comment:
+  db_driver: mongodb
+  class:
+    model:
+      comment: Craft\LocationBundle\Document\Comment
+      thread: Craft\LocationBundle\Document\Thread
 fos_rest:
   routing_loader:
     default_format: json
+  view:
+    formats:
+      rss: true
+      xml : true
+      json: true
+    templating_formats:
+      html: false
 
 mopa_bootstrap:
   navbar: ~
-  
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+
+        sonata.block.service.text: ~
+        sonata.block.service.rss: ~
 services: 
   location_service:
     class: Craft\LocationBundle\Services\Location
-    arguments: [%distance_unit%, @doctrine_mongodb.odm.document_manager]
+    arguments: [%distance_unit%, @doctrine_mongodb.odm.document_manager, @security.acl.provider]
+    

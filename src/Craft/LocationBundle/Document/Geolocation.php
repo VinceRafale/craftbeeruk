@@ -9,7 +9,7 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\EmbeddedDocument
  */
-class Geolocation {
+class Geolocation implements \JsonSerializable {
     
     /** @MongoDB\String */
     public $type;
@@ -80,5 +80,18 @@ class Geolocation {
     public function getCoordinates()
     {
         return $this->coordinates;
+    }
+    
+    public function jsonSerialize()
+    {
+        return [
+            'type' => $this->type,
+            'coordinates' => $this->coordinates
+        ];
+    }
+    
+    public function __toString()
+    {
+        return json_encode($this);
     }
 }
