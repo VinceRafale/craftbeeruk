@@ -5,7 +5,7 @@ namespace Craft\LocationBundle\Services;
 use Craft\LocationBundle\Document;
 use Ricklab\Location as Loc;
 use Guzzle\Service\Client as Guzzle;
-
+use Symfony\Component\Security\Acl\Domain as Acl;
 class Location
 {
 
@@ -26,18 +26,24 @@ class Location
      * @var \Doctrine\ODM\MongoDB\DocumentManager 
      */
     protected $doctrine;
-
+    
+    /**
+     *
+     * @var \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider
+     */
+    protected $aclProvider;
     /**
      * 
      * @param string $unit
      * @param \Doctrine\ODM\MongoDB\DocumentManager $doctrine
      * @param IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl
      */
-    public function __construct($unit, \Doctrine\ODM\MongoDB\DocumentManager $doctrine, \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl)
+    public function __construct($unit, \Doctrine\ODM\MongoDB\DocumentManager $doctrine, \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $aclProvider)
     {
         $this->unit = $unit;
         $this->radius = Loc\Earth::radius($unit);
         $this->doctrine = $doctrine;
+        $this->aclProvider = $aclProvider;
     }
 
     /**
@@ -104,13 +110,20 @@ class Location
 
     public function insertLocation(Document\Location $location, \Craft\UserBundle\Document\User $user, \Symfony\Component\HttpFoundation\Request $request)
     {
+        
 
         $location->setSlug($this->generateSlug($location->getName()));
         $userDocument = new Document\User($user, $request->getClientIp());
         $location->setCreated($userDocument);
         $this->doctrine->persist($location);
         $this->doctrine->flush();
-
+        $objectId = Acl\ObjectIdentity::fromDomainObject($location);
+        $acl = $this->aclProvider->createAcl($objectId);
+        
+        $securityId = Acl\UserSecurityIdentity::fromAccount($user);
+        $roleId = new Acl\RoleSecurityIdentity('ROLE_LOCATION_MODERATOR');
+        
+        
         return $this;
     }
 

@@ -98,7 +98,6 @@ class DefaultController extends Controller
         $location = new Document\Location();
         $form = $this->createForm(new Type\LocationType(), $location);
 
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
