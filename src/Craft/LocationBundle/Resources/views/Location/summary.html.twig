@@ -1,0 +1,6 @@
+<article>
+    <h2><a href="{{ path('craft_location_default_view', {'slug':location.slug}) }}">{{ location.name }}</a></h2>
+    {% if( location.distance ): %}
+        <span>{{ location.distance }}</span>
+    {% endif %}
+</article>

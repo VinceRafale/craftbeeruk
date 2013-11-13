@@ -1,14 +1,13 @@
 {% extends '::base.html.twig' %}
 {% block content %}
-<div id="ajaxResults">
-<p>Searching for locations around you...</p>
-</div>
+    <div id="ajaxResults">
+        <p>Searching for locations around you...</p>
+    </div>
 {% endblock %}
 {% block foot_script %}
-{{parent()}}
-{% javascripts
-        '@CraftLocationBundle/Resources/public/js/location.js'
-    %}
-<script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+    {{ parent() }}
+    {% javascripts
+    '@CraftLocationBundle/Resources/public/js/location.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}

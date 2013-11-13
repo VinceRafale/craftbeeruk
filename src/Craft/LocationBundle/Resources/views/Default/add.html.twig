@@ -1,19 +1,19 @@
 {% extends '::base.html.twig' %}
 {% block page_style %}
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
- <!--[if lte IE 8]>
-     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
- <![endif -->
-{% javascripts filter="?yui_js"
-'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
-'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js'
-'@CraftLocationBundle/Resources/public/js/leafletmap.js' %}
-<script type="text/javascript" src="{{ asset_url }}"></script>
- {% endjavascripts %}
-     {% endblock %}
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css"/>
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif -->
+    {% javascripts filter="?yui_js"
+    'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+    'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js'
+    '@CraftLocationBundle/Resources/public/js/leafletmap.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
 {% block content %}
- <div id="map" style="height: 300px"></div>
-<form id="addlocationform" method="post">
-{{ form_widget(form) }}
-</form>
+    <div id="map" style="height: 300px"></div>
+    <form id="addlocationform" method="post">
+        {{ form_widget(form) }}
+    </form>
 {% endblock %}

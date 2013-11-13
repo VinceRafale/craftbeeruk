@@ -9,11 +9,12 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\EmbeddedDocument
  */
-class Regulars {
-    
+class Regulars
+{
+
     /** @MongoDB\ReferenceOne */
     public $documentId;
-    
+
     /** @MongoDB\String */
     public $regularity;
 

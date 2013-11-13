@@ -10,26 +10,27 @@ use Craft\UserBundle\Document as User;
 /**
  * @MongoDB\Document(collection="beers")
  */
-class Beer {
-    
+class Beer
+{
+
     /** @MongoDB\Id */
     protected $id;
-    
+
     /** @MongoDB\String */
     protected $name;
-    
-    /** 
-     * @MongoDB\ReferenceOne(targetDocument="Location",simple=true) 
+
+    /**
+     * @MongoDB\ReferenceOne(targetDocument="Location",simple=true)
      * @MongoDB\Index
      */
     protected $breweryId;
-    
+
     /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") */
     protected $addedBy;
-    
+
     /** @MongoDB\Date */
     protected $added;
-    
+
 
     /**
      * Get id

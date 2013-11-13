@@ -1,31 +1,33 @@
 {% extends '::base.html.twig' %}
 {% block page_header %}
-<div class="page-header">
-    <h1>{{location.name}}</h1>
-</div>
+    <div class="page-header">
+        <h1>{{ location.name }}</h1>
+    </div>
 {% endblock %}
 {% block page_style %}
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
- <!--[if lte IE 8]>
-     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
- <![endif -->
-{% javascripts filter="?yui_js"
-'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
-'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js'
-'@CraftLocationBundle/Resources/public/js/viewmap.js' %}
-<script type="text/javascript" src="{{ asset_url }}"></script>
- {% endjavascripts %}
-     {% endblock %}
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css"/>
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif -->
+    {% javascripts filter="?yui_js"
+    'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+    'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js'
+    '@CraftLocationBundle/Resources/public/js/viewmap.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
 {% block content %}
-<div style="float:right; width: 300px">
-    {% if(is_granted('ROLE_LOCATION_MODERATOR')) %}
-    <a href="{{path('craft_location_default_edit', {'slug':location.slug})}}">Edit</a>
-    {% endif %}
-     <div id="map" data-lat="{{location.geolocation.coordinates[1]}}" data-lon="{{location.geolocation.coordinates[0]}}" style="height: 300px;"></div>
-    <p>Cask Lines: {{location.caskLines|escape('html')}}</p>
-    <p>Keg Lines: {{location.kegLines|escape('html')}}</p>
-</div>
-<p>{{location.description|escape('html')|nl2br}}</p>
-<a href="{{location.website}}">{{location.website}}</a>
-{% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': location.id} %}
+    <div style="float:right; width: 300px">
+        {% if(is_granted('ROLE_LOCATION_MODERATOR')) %}
+            <a href="{{ path('craft_location_default_edit', {'slug':location.slug}) }}">Edit</a>
+        {% endif %}
+        <div id="map" data-lat="{{ location.geolocation.coordinates[1] }}"
+             data-lon="{{ location.geolocation.coordinates[0] }}" style="height: 300px;"></div>
+        <p>Cask Lines: {{ location.caskLines|escape('html') }}</p>
+
+        <p>Keg Lines: {{ location.kegLines|escape('html') }}</p>
+    </div>
+    <p>{{ location.description|escape('html')|nl2br }}</p>
+    <a href="{{ location.website }}">{{ location.website }}</a>
+    {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': location.id} %}
 {% endblock %}

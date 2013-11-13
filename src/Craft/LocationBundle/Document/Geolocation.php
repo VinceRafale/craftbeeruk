@@ -9,32 +9,35 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\EmbeddedDocument
  */
-class Geolocation implements \JsonSerializable {
-    
+class Geolocation implements \JsonSerializable
+{
+
     /** @MongoDB\String */
     public $type;
-    
+
     /** @MongoDB\Collection */
     public $coordinates = [];
-    
 
-    public function fromLocation($location) {
-        if($location instanceof \JsonSerializable) {
+
+    public function fromLocation($location)
+    {
+        if ($location instanceof \JsonSerializable) {
             $serialise = $location->jsonSerialize();
             $this->type = $serialise['type'];
             $this->coordinates = $serialise['coordinates'];
         }
     }
-    
-    public static function fromGeoJson($location) {
-        if(is_string($location)) {
+
+    public static function fromGeoJson($location)
+    {
+        if (is_string($location)) {
             $location = json_decode($location);
         }
-        
+
         $geolocation = new self();
         $geolocation->type = $location->type;
         $geolocation->coordinates = $location->coordinates;
-        
+
         return $geolocation;
     }
 
@@ -81,7 +84,7 @@ class Geolocation implements \JsonSerializable {
     {
         return $this->coordinates;
     }
-    
+
     public function jsonSerialize()
     {
         return [
@@ -89,7 +92,7 @@ class Geolocation implements \JsonSerializable {
             'coordinates' => $this->coordinates
         ];
     }
-    
+
     public function __toString()
     {
         return json_encode($this);

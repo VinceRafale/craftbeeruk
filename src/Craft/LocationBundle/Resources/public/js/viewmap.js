@@ -1,4 +1,4 @@
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     var mapEl = document.getElementById('map');
     var map = L.map('map');
     L.tileLayer('http://{s}.tile.cloudmade.com/442c4c3cc88b44fa85fd58aa3fd04cf8/997/256/{z}/{x}/{y}.png', {

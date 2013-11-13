@@ -5,18 +5,20 @@ namespace Craft\LocationBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /** @MongoDB\Document(collection="locationsHistory") */
-class LocationHistory {
-    
+class LocationHistory
+{
+
     /** @MongoDB\Id */
     protected $id;
-    
+
     /** @MongoDB\EmbedOne(targetDocument="Location") */
     protected $location;
-    
+
     /** @MongoDB\Date */
     protected $timestamp;
-    
-    public function __construct(Document\Location $document = null) {
+
+    public function __construct(Document\Location $document = null)
+    {
         $this->setTimestamp(new \DateTime());
         $this->setLocation($document);
     }

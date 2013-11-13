@@ -7,19 +7,21 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 /**
  * @MongoDB\EmbeddedDocument
  */
-class User {
-    
+class User
+{
+
     /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") */
     protected $user;
-    
+
     /** @MongoDB\String */
     protected $ip;
-    
+
     /** @MongoDB\Date */
     protected $timestamp;
-    
-    
-    public function __construct(\Craft\UserBundle\Document\User $user, $ip) {
+
+
+    public function __construct(\Craft\UserBundle\Document\User $user, $ip)
+    {
         $this->setIp($ip);
         $this->setUser($user);
         $this->setTimestamp(new \DateTime());

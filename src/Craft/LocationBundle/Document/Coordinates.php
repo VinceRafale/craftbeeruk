@@ -3,7 +3,6 @@
 namespace Craft\LocationBundle\Document;
 
 
-
 /**
  * Craft\LocationBundle\Document\Coordinates
  */

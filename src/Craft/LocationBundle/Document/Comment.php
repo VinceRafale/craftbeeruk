@@ -6,21 +6,23 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use FOS\CommentBundle\Document\Comment as BaseComment;
 use FOS\CommentBundle\Model\SignedCommentInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @MongoDB\Document(collection="comments")
  * @MongoDB\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
-class Comment extends BaseComment implements SignedCommentInterface {
-   
+class Comment extends BaseComment implements SignedCommentInterface
+{
+
     /** @MongoDB\Id */
     protected $id;
-    
+
     /** @MongoDB\ReferenceOne(targetDocument="Craft\LocationBundle\Document\Thread") */
     protected $thread;
-    
+
     /** @MongoDB\ReferenceOne(targetDocument="Craft\UserBundle\Document\User") */
     protected $author;
-    
+
     /**
      * Get id
      *
@@ -52,13 +54,13 @@ class Comment extends BaseComment implements SignedCommentInterface {
     {
         return $this->author;
     }
-    
+
     public function getAuthorName()
     {
-        if(null === $this->getAuthor()) {
+        if (null === $this->getAuthor()) {
             return 'Anonymous';
         }
-        
+
         return $this->getAuthor()->getUsername();
     }
 
@@ -149,10 +151,10 @@ class Comment extends BaseComment implements SignedCommentInterface {
     }
 
     /**
-    * Remove foundHelpful
-    *
-    * @param <variableType$foundHelpful
-    */
+     * Remove foundHelpful
+     *
+     * @param <variableType$foundHelpful
+     */
     public function removeFoundHelpful(\Craft\UserBundle\Document\User $foundHelpful)
     {
         $this->foundHelpful->removeElement($foundHelpful);

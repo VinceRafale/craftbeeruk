@@ -12,33 +12,35 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
  * @MongoDB\Document
  * @ExclusionPolicy("all")
  */
-class User extends BaseUser {
-    
+class User extends BaseUser
+{
+
     /**
      * @MongoDB\Id(strategy="auto")
      */
     protected $id;
-    
+
     /**
      * @var string
      * @Expose
      */
     protected $username;
-    
+
     /**
      * @MongoDB\String
      */
     protected $twitter_username;
-    
+
     /**
      * @MongoDB\String
      */
     protected $twitterID;
-    
-    
-    public function __construct() {
+
+
+    public function __construct()
+    {
         parent::__construct();
-        
+
     }
 
     /**

@@ -11,3 +11,4 @@ codecept.phar
 /web/css/
 /web/js/
 /tests/
+/.idea/

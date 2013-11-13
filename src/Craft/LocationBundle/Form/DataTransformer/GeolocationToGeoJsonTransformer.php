@@ -13,21 +13,21 @@ use Craft\LocationBundle\Document;
  */
 class GeolocationToGeoJsonTransformer implements DataTransformerInterface
 {
-    
-    
+
+
     public function transform($geolocation)
     {
-        if(null === $geolocation) {
+        if (null === $geolocation) {
             return "";
         }
-        
+
         return (string)$geolocation;
     }
-    
+
     public function reverseTransform($location)
     {
         return Document\Geolocation::fromGeoJson($location);
-       
+
     }
 }
 

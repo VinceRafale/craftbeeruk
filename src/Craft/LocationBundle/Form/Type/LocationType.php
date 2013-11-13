@@ -6,33 +6,57 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Craft\LocationBundle\Form\DataTransformer;
 
-class LocationType extends AbstractType {
-    
+class LocationType extends AbstractType
+{
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $form = $builder->add('osmId','hidden')
-                ->add('name','text')
-                ->add('description','textarea')
-                ->add('outlet','choice',[
-                    'choices' => ['pub' => 'pub',
+        $builder->add('osmId', 'hidden')
+            ->add('name', 'text')
+            ->add(
+                'outlet',
+                'choice',
+                [
+                    'choices' => [
+                        'pub' => 'pub',
                         'bar' => 'bar',
                         'off licence' => 'off licence',
                         'restaurant' => 'restaurant',
-                        'cafe' => 'cafe']
-                    ])
-                ->add($builder->create('geolocation','text')
-                        ->addModelTransformer(new DataTransformer\GeolocationToGeoJsonTransformer()))
-                ->add('kegLines')
-                ->add('caskLines')
-                ->add('real_cider')
-                ->add('beerOrigins', 'choice', ['multiple' => true,'expanded' => true,'choices' => ['UK' => 'UK',
-                    'Europe'=>'Europe', 
-                    'America'=>'America', 
-                    'Other'=>'Other']])
-                ->add('add','submit');
+                        'cafe' => 'cafe'
+                    ]
+                ]
+            )
+
+            ->add('description', 'textarea')
+            ->add(
+                $builder->create('geolocation', 'hidden')
+                    ->addModelTransformer(new DataTransformer\GeolocationToGeoJsonTransformer())
+            )
+            ->add(
+                'beerOrigins',
+                'choice',
+                [
+                    'multiple' => true,
+                    'expanded' => true,
+                    'choices' => [
+                        'UK' => 'UK',
+                        'Europe' => 'Europe',
+                        'America' => 'America',
+                        'Other' => 'Other'
+                    ]
+                ]
+            )
+            ->add('cask', new DrinkType())
+            ->add('keg', new DrinkType())
+            ->add('bottleSelection', new DrinkType())
+            ->add('cider', new DrinkType())
+            ->add('openingTimes', new OpeningTimesType())
+            ->add('add', 'submit');
+
     }
-    
-    public function getName() {
+
+    public function getName()
+    {
         return 'location';
     }
 }

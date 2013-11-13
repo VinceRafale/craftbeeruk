@@ -28,16 +28,17 @@
         "mopa/bootstrap-bundle": "dev-master",
         "twbs/bootstrap": "3.*",
         "jlong/sass-twitter-bootstrap": "3.*",
+        "knplabs/knp-menu-bundle": "*",
         "guzzle/guzzle": "*",
         "Ricklab/Location": "*",
         "friendsofsymfony/twitter-bundle": "*",
         "iampersistent/mongodb-acl-bundle": "dev-master",
         "bacon/bacon-string-utils": "dev-master",
         "friendsofsymfony/comment-bundle": "dev-master",
-        "sonata-project/admin-bundle":"dev-master",
+        "sonata-project/admin-bundle": "dev-master",
         "sonata-project/doctrine-mongodb-admin-bundle": "dev-master",
         "sonata-project/user-bundle": "2.2.*@dev"
-        
+
     },
     "repositories": [
     ],

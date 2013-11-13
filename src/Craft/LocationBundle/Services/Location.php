@@ -6,48 +6,59 @@ use Craft\LocationBundle\Document;
 use Ricklab\Location as Loc;
 use Guzzle\Service\Client as Guzzle;
 use Symfony\Component\Security\Acl\Domain as Acl;
+
 class Location
 {
 
     /**
      *
-     * @var float 
+     * @var float
      */
     protected $radius;
 
     /**
      *
-     * @var string 
+     * @var string
      */
     protected $unit;
 
     /**
      *
-     * @var \Doctrine\ODM\MongoDB\DocumentManager 
+     * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
     protected $doctrine;
-    
+
     /**
      *
      * @var \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider
      */
     protected $aclProvider;
+
     /**
-     * 
+     *
      * @param string $unit
      * @param \Doctrine\ODM\MongoDB\DocumentManager $doctrine
-     * @param IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl
+     * @param \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $aclProvider
+     * @internal param \Craft\LocationBundle\Services\IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $acl
      */
-    public function __construct($unit, \Doctrine\ODM\MongoDB\DocumentManager $doctrine, \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $aclProvider)
-    {
-        $this->unit = $unit;
-        $this->radius = Loc\Earth::radius($unit);
+    public function __construct(
+        $unit,
+        \Doctrine\ODM\MongoDB\DocumentManager $doctrine,
+        \IamPersistent\MongoDBAclBundle\Security\Acl\MutableAclProvider $aclProvider
+    ) {
+        $this->setUnit($unit);
         $this->doctrine = $doctrine;
         $this->aclProvider = $aclProvider;
     }
 
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+        $this->radius = Loc\Earth::radius($unit);
+    }
+
     /**
-     * 
+     *
      * @param \Ricklab\Location\Point $point
      * @param int $limit Limit the results to a number
      * @param int $offset Start from this item
@@ -55,23 +66,46 @@ class Location
      */
     public function getLocationsAround(Loc\Point $point, $limit, $offset = 0)
     {
-        list($x, $y) = $point->jsonSerialize()['coordinates'];
-        /* $locations = $this->getMongoLocationCollection()->createQueryBuilder()
-          ->near($point->jsonSerialize());
-         */
 
-        $locations = $this->doctrine->getDocumentCollection('CraftLocationBundle:Location')->aggregate(['$geoNear' => [
-                'near' => $point->jsonSerialize(),
-                'limit' => (int) $limit,
-                'skip' => $offset,
-                'spherical' => true,
-                'distanceField' => 'distance']]);
+        $locations = $this->doctrine->getDocumentCollection('CraftLocationBundle:Location')->aggregate(
+            [
+                '$geoNear' => [
+                    'near' => $point->jsonSerialize(),
+                    'limit' => (int)$limit,
+                    'skip' => $offset,
+                    'spherical' => true,
+                    'distanceField' => 'distance'
+                ]
+            ]
+        );
         /*  $locations = $this->getMongoLocationCollection()
           ->createQueryBuilder()
           ->geoNear($x, $y)
           ->limit((int) $limit)
           ->skip($offset)->getQuery(); */
         return $locations;
+    }
+
+    public function getLatest($limit = 4)
+    {
+        $repository = $this->getMongoLocationCollection();
+
+        $query = $repository->createQueryBuilder()
+            ->sort('created.timestamp', 'desc')
+            ->limit($limit)->getQuery();
+        return $query;
+
+    }
+
+    public function getLatestUpdated($limit = 4)
+    {
+        $repository = $this->getMongoLocationCollection();
+
+        $query = $repository->createQueryBuilder()
+            ->sort('updated.timestamp', 'desc')
+            ->limit($limit)->getQuery();
+        return $query;
+
     }
 
     public function getOsmLocations(Loc\Mbr $mbr, $amenity, Array $tags = [])
@@ -93,8 +127,11 @@ class Location
         $response = $osm->get('xapi?*[craft_beer=yes]')->send();
     }
 
-    public function updateLocation(Document\Location $location, \Craft\UserBundle\Document\User $user, \Symfony\Component\HttpFoundation\Request $request)
-    {
+    public function updateLocation(
+        Document\Location $location,
+        \Craft\UserBundle\Document\User $user,
+        \Symfony\Component\HttpFoundation\Request $request
+    ) {
         if ($location->getId() == null) {
             $this->insertLocation($location, $user, $request);
         } else {
@@ -108,9 +145,12 @@ class Location
         return $this;
     }
 
-    public function insertLocation(Document\Location $location, \Craft\UserBundle\Document\User $user, \Symfony\Component\HttpFoundation\Request $request)
-    {
-        
+    public function insertLocation(
+        Document\Location $location,
+        \Craft\UserBundle\Document\User $user,
+        \Symfony\Component\HttpFoundation\Request $request
+    ) {
+
 
         $location->setSlug($this->generateSlug($location->getName()));
         $userDocument = new Document\User($user, $request->getClientIp());
@@ -119,16 +159,16 @@ class Location
         $this->doctrine->flush();
         $objectId = Acl\ObjectIdentity::fromDomainObject($location);
         $acl = $this->aclProvider->createAcl($objectId);
-        
+
         $securityId = Acl\UserSecurityIdentity::fromAccount($user);
         $roleId = new Acl\RoleSecurityIdentity('ROLE_LOCATION_MODERATOR');
-        
-        
+
+
         return $this;
     }
 
     /**
-     * 
+     *
      * @param type $slug
      * @return \Craft\LocationBundle\Document\Location
      */
@@ -142,23 +182,27 @@ class Location
         return $this->findLocation('osmId', $osmId);
     }
 
+    public function uploadImage(Document\Location $location, $image)
+    {
+
+    }
+
     /**
-     * 
+     *
      * @param string $field
      * @param string $value
      * @return \Craft\LocationBundle\Document\Location
      */
     public function findLocation($field, $value)
     {
-        $rep = $this->getMongoLocationCollection();
-        $location = $rep->findOneBy([$field => $value]);
+        $location = $this->getMongoLocationCollection()->findLocation($field, $value);
 
         return $location;
     }
 
     /**
-     * 
-     * @return \Doctrine\ODM\MongoDB\DocumentRepository
+     *
+     * @return \Craft\LocationBundle\Document\LocationRepository
      */
     protected function getMongoLocationCollection()
     {
@@ -168,7 +212,7 @@ class Location
     }
 
     /**
-     * 
+     *
      * @return float
      */
     public function getRadius()
@@ -177,7 +221,7 @@ class Location
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getUnit()

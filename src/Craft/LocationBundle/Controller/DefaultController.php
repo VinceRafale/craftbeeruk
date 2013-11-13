@@ -30,7 +30,7 @@ class DefaultController extends Controller
     public function findAtLocationAction($latitude, $longitude, $limit)
     {
 
-        $point = new Location\Point((float) $latitude, (float) $longitude);
+        $point = new Location\Point((float)$latitude, (float)$longitude);
 
         $locations = $this->get('location_service')->getLocationsAround($point, $limit);
 
@@ -58,16 +58,18 @@ class DefaultController extends Controller
             $resultsArray = [];
             $xpathDoc = new \DOMXPath($results);
             foreach ($xpathDoc->query('*[tag[@k="name"]]') as $location) {
-                $id = (int) $location->getAttribute('id');
+                $id = (int)$location->getAttribute('id');
                 $locationDbObject = $locationsCollection->findOneBy(['osmId' => $id]);
                 if ($locationDbObject === null) {
                     $locationDbObject = new \Craft\LocationBundle\Document\Location();
                     $locationDbObject->setOsmId($id);
-                    $locationDbObject->setCreated(new Document\User(new \Craft\UserBundle\Document\User(), $_SERVER['REMOTE_ADDR']));
+                    $locationDbObject->setCreated(
+                        new Document\User(new \Craft\UserBundle\Document\User(), $_SERVER['REMOTE_ADDR'])
+                    );
                 }
                 $tags = [];
                 foreach ($location->getElementsByTagName('tag') as $tag) {
-                    $tags[(string) $tag->getAttribute('k')] = (string) $tag->getAttribute('v');
+                    $tags[(string)$tag->getAttribute('k')] = (string)$tag->getAttribute('v');
                 }
                 $geolocation = [];
                 if ($location->hasAttribute('lat') && $location->hasAttribute('lon')) {
@@ -76,7 +78,10 @@ class DefaultController extends Controller
                     foreach ($location->getElementsByTagName('nd') as $nd) {
                         $nid = $nd->getAttribute('ref');
                         $refNode = $xpathDoc->query("//*[@id='$nid']")->item(0);
-                        $geolocation[] = ['lat' => $refNode->getAttribute('lat'), 'lon' => $refNode->getAttribute('lon')];
+                        $geolocation[] = [
+                            'lat' => $refNode->getAttribute('lat'),
+                            'lon' => $refNode->getAttribute('lon')
+                        ];
                     }
                 }
                 $locationDbObject->populateOsmTags($tags);
@@ -108,17 +113,17 @@ class DefaultController extends Controller
         return ['form' => $form->createView()];
     }
 
-    /** @Route("/edit/{slug}") 
+    /** @Route("/edit/{slug}")
      * @Template("CraftLocationBundle:Default:add.html.twig")
      */
     public function editAction($slug, \Symfony\Component\HttpFoundation\Request $request)
     {
-        
+
         $location = $this->get('location_service')->findLocationBySlug($slug);
 
         $form = $this->createForm(new Type\LocationType(), $location);
         $form->remove('add')
-                ->add('edit', 'submit');
+            ->add('edit', 'submit');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -135,26 +140,26 @@ class DefaultController extends Controller
     public function viewAction($slug, \Symfony\Component\HttpFoundation\Request $request)
     {
         $location = $this->get('location_service')->findLocationBySlug($slug);
-        
+
         //Comment loading
         $id = $location->getId();
-    $thread = $this->container->get('fos_comment.manager.thread')->findThreadById($id);
-    if (null === $thread) {
-        $thread = $this->container->get('fos_comment.manager.thread')->createThread();
-        $thread->setId($id);
-        $thread->setPermalink($request->getUri());
-        
-        // Add the thread
-        $this->container->get('fos_comment.manager.thread')->saveThread($thread);
-    }
-     $comments = $this->container->get('fos_comment.manager.comment')->findCommentTreeByThread($thread);
-    //end comment loading
+        $thread = $this->container->get('fos_comment.manager.thread')->findThreadById($id);
+        if (null === $thread) {
+            $thread = $this->container->get('fos_comment.manager.thread')->createThread();
+            $thread->setId($id);
+            $thread->setPermalink($request->getUri());
+
+            // Add the thread
+            $this->container->get('fos_comment.manager.thread')->saveThread($thread);
+        }
+        $comments = $this->container->get('fos_comment.manager.comment')->findCommentTreeByThread($thread);
+        //end comment loading
 
         return ['location' => $location, 'comments' => $comments];
     }
 
     /**
-     * 
+     *
      * @param string $repository
      * @return \Doctrine\ODM\MongoDB\DocumentRepository
      */
