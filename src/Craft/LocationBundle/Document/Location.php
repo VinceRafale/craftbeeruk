@@ -2,6 +2,7 @@
 
 namespace Craft\LocationBundle\Document;
 
+use Doctrine\ODM\MongoDB\Event\PreUpdateEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
@@ -9,7 +10,6 @@ use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 /**
  * @MongoDB\Document(collection="locations", repositoryClass="Craft\LocationBundle\Document\LocationRepository")
  * @MongoDB\Index(keys={"geolocation"="2dsphere"})
- *
  * @MongoDBUnique(fields="osmId")
  */
 class Location
@@ -27,7 +27,11 @@ class Location
      */
     protected $osmId;
 
-    /** @MongoDB\String */
+    /**
+     * @MongoDB\String
+     * @MongoDB\Index
+     *
+     */
     protected $name;
 
     /**
@@ -52,12 +56,6 @@ class Location
     /** @MongoDB\String */
     protected $description;
 
-    /** @MongoDB\EmbedOne(targetDocument="OpeningTimes") */
-    protected $opening;
-
-    /** @MongoDB\EmbedOne(targetDocument="Drink") */
-    protected $cider;
-
     /** @MongoDB\String */
     protected $website;
 
@@ -70,26 +68,32 @@ class Location
     /** @MongoDB\String */
     protected $address;
 
+    /** @MongoDB\EmbedOne(targetDocument="Drinks") */
+    protected $drinks;
+
+    /** @MongoDB\EmbedOne(targetDocument="Food") */
+    protected $food;
+
+    /** @MongoDB\EmbedOne(targetDocument="OpeningTimes") */
+    protected $openingTimes;
+
+    /** @MongoDB\String */
+    protected $twitter;
+
     /** @MongoDB\EmbedMany(targetDocument="User") */
     protected $updated = [];
 
     /** @MongoDB\EmbedOne(targetDocument="User") */
     protected $created;
 
-    /** @MongoDB\EmbedOne(targetDocument="Drink") */
-    protected $cask;
+    public function __construct()
+    {
+        $this->setFood(null);
+        $this->setDrinks(null);
+        $this->setOpeningTimes(null);
 
-    /** @MongoDB\EmbedOne(targetDocument="Drink") */
-    protected $keg;
-
-    /** @MongoDB\EmbedOne(targetDocument="Drink") */
-    protected $bottleSelection;
-
-    /** @MongoDB\Collection */
-    protected $beerOrigins = [];
-
-    /** @MongoDB\EmbedOne(targetDocument="OpeningTimes") */
-    protected $openingTimes;
+        $this->updated = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -234,54 +238,6 @@ class Location
     }
 
     /**
-     * Populates the properties from OSM tags
-     * @param array $tags
-     */
-    public function populateOsmTags(array $tags)
-    {
-        $this->setName($tags['name']);
-        if (isset($tags['amenity'])) {
-            $this->setAmenity($tags['amenity']);
-        }
-        $this->setRealCider(isset($tags['real_cider']) && $tags['real_cider'] === 'yes');
-        $this->setRealAle(isset($tags['real_ale']) && $tags['real_ale'] === 'yes');
-        if (isset($tags['email'])) {
-            $this->setEmail($tags['email']);
-        }
-        if (isset($tags['contact:website'])) {
-            $this->setWebsite($tags['contact:website']);
-        }
-        if (isset($tags['website'])) {
-            $this->setWebsite($tags['website']);
-        }
-
-        $address = [];
-        if (isset($tags['addr:housename'])) {
-            $address[] = $tags['addr:housename'];
-        }
-        if (isset($tags['addr:housenumber'])) {
-            $address[] = $tags['addr:housenumber'];
-        }
-        if (isset($tags['addr:street'])) {
-            $address[] = $tags['addr:street'];
-        }
-        if (isset($tags['addr:city'])) {
-            $address[] = $tags['addr:city'];
-        }
-        if (isset($tags['addr:postcode'])) {
-            $address[] = $tags['addr:postcode'];
-        }
-        $address = implode("\n", $address);
-        if ($address !== '') {
-            $this->setAddress($address);
-        }
-        if (isset($tags['phone'])) {
-            $this->setWebsite($tags['phone']);
-        }
-
-    }
-
-    /**
      * Set distance
      *
      * @param string $distance
@@ -369,19 +325,9 @@ class Location
     }
 
     /**
-     * Add coordinates
-     *
-     * @param \Craft\LocationBundle\Document\Coordinates $coordinates
-     */
-    public function addCoordinate(\Craft\LocationBundle\Document\Coordinates $coordinates)
-    {
-        $this->coordinates[] = $coordinates;
-    }
-
-    /**
      * Remove updated
      *
-     * @param <variableType$updated
+     * @param \Craft\LocationBundle\Document\User $updated
      */
     public function removeUpdated(\Craft\LocationBundle\Document\User $updated)
     {
@@ -408,29 +354,6 @@ class Location
     public function getOutlet()
     {
         return $this->outlet;
-    }
-
-
-    /**
-     * Set beerOrigins
-     *
-     * @param collection $beerOrigins
-     * @return self
-     */
-    public function setBeerOrigins($beerOrigins)
-    {
-        $this->beerOrigins = $beerOrigins;
-        return $this;
-    }
-
-    /**
-     * Get beerOrigins
-     *
-     * @return collection $beerOrigins
-     */
-    public function getBeerOrigins()
-    {
-        return $this->beerOrigins;
     }
 
     /**
@@ -462,12 +385,6 @@ class Location
         return $this->geolocation;
     }
 
-    public function __construct()
-    {
-        $this->updated = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-
     /**
      * Set description
      *
@@ -491,188 +408,12 @@ class Location
     }
 
     /**
-     * Set opening
-     *
-     * @param Craft\LocationBundle\Document\OpeningTimes $opening
-     * @return self
-     */
-    public function setOpening(\Craft\LocationBundle\Document\OpeningTimes $opening)
-    {
-        $this->opening = $opening;
-        return $this;
-    }
-
-    /**
-     * Get opening
-     *
-     * @return Craft\LocationBundle\Document\OpeningTimes $opening
-     */
-    public function getOpening()
-    {
-        return $this->opening;
-    }
-
-    /**
-     * Set caskInfo
-     *
-     * @param string $caskInfo
-     * @return self
-     */
-    public function setCaskInfo($caskInfo)
-    {
-        $this->caskInfo = $caskInfo;
-        return $this;
-    }
-
-    /**
-     * Get caskInfo
-     *
-     * @return string $caskInfo
-     */
-    public function getCaskInfo()
-    {
-        return $this->caskInfo;
-    }
-
-    /**
-     * Set kegInfo
-     *
-     * @param string $kegInfo
-     * @return self
-     */
-    public function setKegInfo($kegInfo)
-    {
-        $this->kegInfo = $kegInfo;
-        return $this;
-    }
-
-    /**
-     * Get kegInfo
-     *
-     * @return string $kegInfo
-     */
-    public function getKegInfo()
-    {
-        return $this->kegInfo;
-    }
-
-    /**
-     * Set bottleSelection
-     *
-     * @param boolean $bottleSelection
-     * @return self
-     */
-    public function setBottleSelection($bottleSelection)
-    {
-        $this->bottleSelection = $bottleSelection;
-        return $this;
-    }
-
-    /**
-     * Get bottleSelection
-     *
-     * @return boolean $bottleSelection
-     */
-    public function getBottleSelection()
-    {
-        return $this->bottleSelection;
-    }
-
-    /**
-     * Set bottleInfo
-     *
-     * @param string $bottleInfo
-     * @return self
-     */
-    public function setBottleInfo($bottleInfo)
-    {
-        $this->bottleInfo = $bottleInfo;
-        return $this;
-    }
-
-    /**
-     * Get bottleInfo
-     *
-     * @return string $bottleInfo
-     */
-    public function getBottleInfo()
-    {
-        return $this->bottleInfo;
-    }
-
-    /**
-     * Set cider
-     *
-     * @param Craft\LocationBundle\Document\Drink $cider
-     * @return self
-     */
-    public function setCider(\Craft\LocationBundle\Document\Drink $cider)
-    {
-        $this->cider = $cider;
-        return $this;
-    }
-
-    /**
-     * Get cider
-     *
-     * @return Craft\LocationBundle\Document\Drink $cider
-     */
-    public function getCider()
-    {
-        return $this->cider;
-    }
-
-    /**
-     * Set cask
-     *
-     * @param Craft\LocationBundle\Document\Drink $cask
-     * @return self
-     */
-    public function setCask(\Craft\LocationBundle\Document\Drink $cask)
-    {
-        $this->cask = $cask;
-        return $this;
-    }
-
-    /**
-     * Get cask
-     *
-     * @return Craft\LocationBundle\Document\Drink $cask
-     */
-    public function getCask()
-    {
-        return $this->cask;
-    }
-
-    /**
-     * Set keg
-     *
-     * @param Craft\LocationBundle\Document\Drink $keg
-     * @return self
-     */
-    public function setKeg(\Craft\LocationBundle\Document\Drink $keg)
-    {
-        $this->keg = $keg;
-        return $this;
-    }
-
-    /**
-     * Get keg
-     *
-     * @return Craft\LocationBundle\Document\Drink $keg
-     */
-    public function getKeg()
-    {
-        return $this->keg;
-    }
-
-    /**
      * Set openingTimes
      *
-     * @param Craft\LocationBundle\Document\OpeningTimes $openingTimes
+     * @param \Craft\LocationBundle\Document\OpeningTimes $openingTimes
      * @return self
      */
-    public function setOpeningTimes(\Craft\LocationBundle\Document\OpeningTimes $openingTimes)
+    public function setOpeningTimes($openingTimes)
     {
         $this->openingTimes = $openingTimes;
         return $this;
@@ -681,10 +422,85 @@ class Location
     /**
      * Get openingTimes
      *
-     * @return Craft\LocationBundle\Document\OpeningTimes $openingTimes
+     * @return \Craft\LocationBundle\Document\OpeningTimes $openingTimes
      */
     public function getOpeningTimes()
     {
         return $this->openingTimes;
+    }
+
+    /**
+     * Set twitter
+     *
+     * @param string $twitter
+     * @return self
+     */
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+        return $this;
+    }
+
+    /**
+     * Get twitter
+     *
+     * @return string $twitter
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    /**
+     * Set food
+     *
+     * @param \Craft\LocationBundle\Document\Food $food
+     * @return self
+     */
+    public function setFood($food)
+    {
+        $this->food = $food;
+        return $this;
+    }
+
+    /**
+     * Get food
+     *
+     * @return \Craft\LocationBundle\Document\Food $food
+     */
+    public function getFood()
+    {
+        return $this->food;
+    }
+
+    public function isOpen(\DateTime $date = null)
+    {
+        if ($this->openingTimes === null) {
+            return null;
+        } else {
+            return $this->openingTimes->isOpen($date);
+        }
+    }
+
+    /**
+     * Set drinks
+     *
+     * @param \Craft\LocationBundle\Document\Drinks $drinks
+     * @return self
+     */
+    public function setDrinks($drinks)
+    {
+        $this->drinks = $drinks;
+        return $this;
+    }
+
+    /**
+     * Get drinks
+     *
+     * @return \Craft\LocationBundle\Document\Drinks $drinks
+     */
+    public function getDrinks()
+    {
+        return $this->drinks;
     }
 }

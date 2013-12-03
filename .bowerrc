@@ -1,0 +1,4 @@
+{
+    "directory" : "src/Craft/CoreBundle/Resources/public",
+    "json"      : "component.json"
+}

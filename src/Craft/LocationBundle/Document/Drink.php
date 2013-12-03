@@ -15,32 +15,37 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 class Drink
 {
     /** @MongoDB\Boolean */
-    protected $exists;
+    protected $available;
 
     /** @MongoDB\string */
     protected $description;
 
 
+    public function __construct()
+    {
+        $this->available = false;
+    }
+
     /**
-     * Set exists
+     * Set available
      *
-     * @param boolean $exists
+     * @param boolean $available
      * @return self
      */
-    public function setExists($exists)
+    public function setAvailable($available)
     {
-        $this->exists = $exists;
+        $this->available = $available;
         return $this;
     }
 
     /**
-     * Get exists
+     * Get available
      *
-     * @return boolean $exists
+     * @return boolean $available
      */
-    public function getExists()
+    public function getAvailable()
     {
-        return $this->exists;
+        return $this->available;
     }
 
     /**

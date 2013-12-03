@@ -34,6 +34,9 @@ class OpeningTimesType extends AbstractType
                 ]
             );
         }
+
+        $formBuilder->add('save', 'submit')
+            ->add('remove', 'submit');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -17,7 +17,7 @@ class DrinkType extends AbstractType
 
     public function buildForm(FormBuilderInterface $formBuilder, array $options)
     {
-        $formBuilder->add('exists', 'checkbox')
+        $formBuilder->add('available', 'checkbox')
             ->add('description', 'text');
     }
 

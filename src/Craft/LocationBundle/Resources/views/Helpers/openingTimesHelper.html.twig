@@ -1,0 +1,31 @@
+<dl class="dl-horizontal">
+    <dt>Monday</dt>
+    <dd>{% if openingTimes.mon.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.mon.opens|date('H:i') }} - {{ openingTimes.mon.closes|date('H:i') }}
+        {% endif %}
+    </dd>
+    <dt>Tuesday</dt>
+    <dd>{% if openingTimes.tue.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.tue.opens|date('H:i') }} - {{ openingTimes.tue.closes|date('H:i') }}
+        {% endif %}</dd>
+    <dt>Wednesday</dt>
+    <dd>{% if openingTimes.wed.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.wed.opens|date('H:i') }} - {{ openingTimes.wed.closes|date('H:i') }}
+        {% endif %}</dd>
+    <dt>Thursday</dt>
+    <dd>{% if openingTimes.thu.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.thu.opens|date('H:i') }} - {{ openingTimes.thu.closes|date('H:i') }}
+        {% endif %}</dd>
+    <dt>Friday</dt>
+    <dd>{% if openingTimes.fri.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.fri.opens|date('H:i') }} - {{ openingTimes.fri.closes|date('H:i') }}
+        {% endif %}</dd>
+    <dt>Saturday</dt>
+    <dd>{% if openingTimes.sat.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.sat.opens|date('H:i') }} - {{ openingTimes.sat.closes|date('H:i') }}
+        {% endif %}</dd>
+    <dt>Sunday</dt>
+    <dd>{% if openingTimes.sun.closed %}<em>closed</em>{% else %}
+            {{ openingTimes.sun.opens|date('H:i') }} - {{ openingTimes.sun.closes|date('H:i') }}
+        {% endif %}</dd>
+</dl>

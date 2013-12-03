@@ -28,12 +28,12 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [MopaBootstrapBundle, CraftLocationBundle, FOSCommentBundle]
+    bundles:        [CraftCoreBundle, CraftLocationBundle, FOSCommentBundle]
     filters:
-      #  less: 
-      #    node: /usr/local/bin/node
-      #    node_paths: [/usr/local/share/npm/lib/node_modules]
-      #    apply_to: "\.less$"
+        less:
+          node: /usr/local/bin/node
+          node_paths: [/usr/local/share/npm/lib/node_modules]
+          apply_to: "\.less$"
         sass:
           sass: /usr/bin/compass
           apply_to: "\.(scss|sass)$"
@@ -78,18 +78,16 @@ fos_comment:
       comment: Craft\LocationBundle\Document\Comment
       thread: Craft\LocationBundle\Document\Thread
 
-fos_rest:
-  routing_loader:
-    default_format: json
-  view:
-    formats:
-      rss: true
-      xml : true
-      json: true
-    templating_formats:
-      html: false
-
-mopa_bootstrap:
+#fos_rest:
+#  routing_loader:
+#    default_format: json
+##  view:
+#    formats:
+#      rss: true
+#      xml : true
+#      json: true
+#    templating_formats:
+#      html: false
 
 sonata_block:
     default_contexts: [cms]

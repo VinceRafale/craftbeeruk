@@ -1,0 +1,17 @@
+{
+    "name": "craftbeeruk",
+    "version": "0.1",
+    "homepage": "https://github.com/rickogden/craftbeeruk",
+    "authors": [
+        "Rick Ogden <rick@rickogden.com>"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "src/Craft/CoreBundle/Resources/public",
+        "test",
+        "tests"
+    ]
+}

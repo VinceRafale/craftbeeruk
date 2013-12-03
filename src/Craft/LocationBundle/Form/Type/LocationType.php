@@ -32,25 +32,11 @@ class LocationType extends AbstractType
                 $builder->create('geolocation', 'hidden')
                     ->addModelTransformer(new DataTransformer\GeolocationToGeoJsonTransformer())
             )
-            ->add(
-                'beerOrigins',
-                'choice',
-                [
-                    'multiple' => true,
-                    'expanded' => true,
-                    'choices' => [
-                        'UK' => 'UK',
-                        'Europe' => 'Europe',
-                        'America' => 'America',
-                        'Other' => 'Other'
-                    ]
-                ]
-            )
-            ->add('cask', new DrinkType())
-            ->add('keg', new DrinkType())
-            ->add('bottleSelection', new DrinkType())
-            ->add('cider', new DrinkType())
-            ->add('openingTimes', new OpeningTimesType())
+            ->add('twitter')
+            ->add('website')
+            ->add('phone')
+            ->add('email')
+            ->add('address', 'textarea')
             ->add('add', 'submit');
 
     }

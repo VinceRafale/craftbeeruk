@@ -1,47 +1,69 @@
-{% extends 'MopaBootstrapBundle::base.html.twig' %}
-{% block title %}Craft Beer UK{% endblock %}
-{% block head_style %}
-{% stylesheets filter='sass'
-   '@MopaBootstrapBundle/Resources/public/sass/mopabootstrapbundle.scss'
-%}
-<link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
-{% endstylesheets %}
-{% block page_style %}
-{% endblock %}
-{% endblock head_style %}
-{% block headline %}
-Craft Beer UK
-{% endblock %}
-{% block navbar %}
-<div class="navbar navbar-default">
-    <div class="navbar-header">
-        <a class="navbar-brand" href="{{ url('craft_core_pages_index') }}">Craft Beer UK</a>
-    </div>
-        <ul class="nav navbar-nav pull-right">
-            {% if is_granted('ROLE_ADMIN') %}
-            <li><a href="{{url('sonata_admin_dashboard')}}">Admin</a></li>
-            {% endif %}
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Craft Beer UK{% endblock %}</title>
+    {% block head_style %}
+        {% stylesheets
+        '@CraftCoreBundle/Resources/public/bootstrap/dist/css/bootstrap.min.css' %}
+        <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+        {% endstylesheets %}
+    {% block head_script %}
+        {% javascripts
+        '@CraftCoreBundle/Resources/public/jquery/jquery.min.js'
+        '@CraftCoreBundle/Resources/public/bootstrap/js/dropdown.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+        {% block page_style %}
+        {% endblock %}
+    {% endblock head_style %}
+</head>
+<body>
+
+<div class="container">{% block navbar %}
+        <div class="navbar navbar-default">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url('craft_core_pages_index') }}">Craft Beer UK</a>
+            </div>
+            {% block navbar_main %}{% endblock %}
+            <ul class="nav navbar-nav pull-right">
+                {% block navbar_right %}{% endblock %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ url('sonata_admin_dashboard') }}">Admin</a></li>
+                {% endif %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}
                         {% else %}
-                    Account
-                    {% endif %}
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <li><a href="{{url('fos_user_profile_edit')}}">Edit Profile</a></li>
-                    <li><a href="{{url('fos_user_security_logout')}}">Logout</a></li>
-                    {% else %}
-                    <li><a href="{{url('fos_user_security_login')}}">Login</a></li>
-                    <li><a href="{{url('fos_user_registration_register')}}">Register</a></li>
-                    {% endif %}
-                </ul>
-            </li>
-        </ul>
+                            Account
+                        {% endif %}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <li><a href="{{ url('fos_user_profile_edit') }}">Edit Profile</a></li>
+                            <li><a href="{{ url('fos_user_security_logout') }}">Logout</a></li>
+                        {% else %}
+                            <li><a href="{{ url('fos_user_security_login') }}">Login</a></li>
+                            <li><a href="{{ url('fos_user_registration_register') }}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    {% endblock %}
+    <div class="content">
+        <h1>{% block headline %}Craft Beer UK{% endblock headline %}</h1>
+
+        <div class="page-header"></div>
+        <div class="row">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </div>
-{% endblock %}
+</body>
+
 {% block footer %}
 {% endblock %}
+</html>

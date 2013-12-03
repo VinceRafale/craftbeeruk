@@ -1,8 +1,11 @@
 {% extends '::base.html.twig' %}
-{% block page_header %}
-    <div class="page-header">
-        <h1>{{ location.name }}</h1>
-    </div>
+{% block headline %}
+    {{ location.name }}
+    {% if location.isOpen %}
+        <small>Open</small>
+    {% elseif location.isOpen is same as(false) %}
+        <small>Closed</small>
+    {% endif %}
 {% endblock %}
 {% block page_style %}
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css"/>
@@ -16,18 +19,77 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
+{% block navbar_right %}
+    {% if(is_granted('ROLE_LOCATION_MODERATOR')) %}
+        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="{{ path('craft_location_edit_general', {'slug':location.slug}) }}">General Information</a>
+                </li>
+                <li><a href="{{ path('craft_location_edit_drinks', {'slug':location.slug}) }}">
+                        {% if location.drinks is null %}Add{% else %}Edit{% endif %} Drinks</a></li>
+                <li><a href="{{ path('craft_location_edit_opening', {'slug':location.slug}) }}">
+                        {% if location.openingTimes is null %}Add{% else %}Edit{% endif %} Opening Times</a>
+                </li>
+                <li><a href="{{ path('craft_location_edit_food', {'slug':location.slug}) }}">
+                        {% if location.food is null %}Add Food{% else %}Edit Food</li>
+                <li><a href="{{ path('craft_location_edit_foodopening', {'slug':location.slug}) }}">
+                        {% if location.food is null %}Add{% else %}Edit{% endif %} Kitchen
+                        Opening Times
+                        {% endif %}</a></li>
+            </ul>
+        </li>
+    {% endif %}
+{% endblock %}
 {% block content %}
-    <div style="float:right; width: 300px">
-        {% if(is_granted('ROLE_LOCATION_MODERATOR')) %}
-            <a href="{{ path('craft_location_default_edit', {'slug':location.slug}) }}">Edit</a>
-        {% endif %}
+    <div class="col-md-4 col-md-push-8">
         <div id="map" data-lat="{{ location.geolocation.coordinates[1] }}"
              data-lon="{{ location.geolocation.coordinates[0] }}" style="height: 300px;"></div>
-        <p>Cask Lines: {{ location.caskLines|escape('html') }}</p>
-
-        <p>Keg Lines: {{ location.kegLines|escape('html') }}</p>
+        <p>Type: {{ location.outlet }}</p>
+        {% if location.openingTimes is not null %}
+            {{ include('CraftLocationBundle:Helpers:openingTimesHelper.html.twig', {'openingTimes':location.openingTimes}) }}
+        {% endif %}
+        {% if location.website|length > 0 %}
+            <a href="{{ location.website }}">{{ location.website }}</a>
+        {% endif %}
     </div>
     <p>{{ location.description|escape('html')|nl2br }}</p>
-    <a href="{{ location.website }}">{{ location.website }}</a>
+    <div class="row">
+        {% if location.drinks is not null %}
+            <section class="col-md-6">
+                <h2>Drinks</h2>
+                <dl class="dl-horizontal">
+                    {% if location.drinks.beerOrigins|length > 0 %}
+                        <dt>Beer origins</dt>
+                        <dd>{{ location.drinks.beerOrigins|join(', ') }}</dd>
+                    {% endif %}
+                    <dt>Cask</dt>
+                    <dd>{% if not location.drinks.cask.available %}<em>not
+                            available</em>{% else %}{{ location.drinks.cask.description }}{% endif %}</dd>
+                    <dt>Keg</dt>
+                    <dd>{% if not location.drinks.keg.available %}<em>not
+                            available</em>{% else %}{{ location.drinks.keg.description }}{% endif %}</dd>
+
+                    <dt>Bottle Selection</dt>
+                    <dd>{% if not location.drinks.bottleSelection.available %}<em>not
+                            available</em>{% else %}{{ location.drinks.bottleSelection.description }}{% endif %}</dd>
+                    <dt>Cider</dt>
+                    <dd>{% if not location.drinks.cider.available %}<em>not
+                            available</em>{% else %}{{ location.drinks.cider.description }}{% endif %}</dd>
+                </dl>
+            </section>
+        {% endif %}
+        {% if location.food is not null %}
+            <section class="col-md-6">
+                <h2>Food{% if not location.food.available %}
+                    <small>Not Available</small>{% endif %}</h2>
+                {% if location.food.available %}
+                    <p>{{ location.food.description }}</p>
+                    {% if location.food.kitchenOpening is not null %}
+                        {{ include('CraftLocationBundle:Helpers:openingTimesHelper.html.twig', {'openingTimes':location.food.kitchenOpening}) }}
+                    {% endif %}
+                {% endif %}
+            </section>
+        {% endif %}
+    </div>
     {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': location.id} %}
 {% endblock %}

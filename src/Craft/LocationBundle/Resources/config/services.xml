@@ -23,5 +23,10 @@
             <argument type="service" id="doctrine_mongodb.odm.document_manager"/>
             <argument type="service" id="security.acl.provider"/>
         </service>
+        <service id="doctrine_mongo_db_param_converter"
+                 class="Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter">
+            <argument type="service" id="doctrine_mongodb"/>
+            <tag name="request.param_converter" converter="doctrine.odm"/>
+        </service>
     </services>
 </container>

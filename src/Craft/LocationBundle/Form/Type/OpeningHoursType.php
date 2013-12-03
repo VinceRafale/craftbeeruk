@@ -22,14 +22,16 @@ class OpeningHoursType extends AbstractType
                 'opens',
                 'time',
                 [
-                    'widget' => 'single_text'
+                    'widget' => 'single_text',
+                    'input' => 'string'
                 ]
             )
             ->add(
                 'closes',
                 'time',
                 [
-                    'widget' => 'single_text'
+                    'widget' => 'single_text',
+                    'input' => 'string'
                 ]
             );
     }
